@@ -1,0 +1,298 @@
+---
+title: "Friday_Session_Spe28"
+author: "Zhidong Chen"
+date: "9/28/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# Set root directory 
+require("knitr")
+opts_knit$set(root.dir = "~/Documents/AAE636_2018Fall/FridaySessions/2_Sep28")
+```
+
+# Today
+  1. **Data Frame**
+  2. **Writing Functions**
+  3. **Plots**
+
+## 1. Data Frame
+
+```{r, echo = TRUE, message = FALSE, warning = FALSE}
+# Load packages
+library(readxl) 
+library(dplyr)
+library(psych)
+library(pastecs)
+library(ggplot2)
+library(gridExtra)
+```
+
+# ... Read and Write data
+
+Read excel file:
+
+```{r, warning=FALSE}
+# read data
+house636 <- readxl::read_excel("house636.xlsx", sheet = "Data", col_names = TRUE)
+```
+
+Most commonly-used data format: .csv -- comma-separted values files. 
+read.csv("path/file-name.csv")
+write.csv("path/new-file-name.csv")
+
+
+### 1.1 Commonly-used functions
+
+R has some built-in data. **mtcars** is one of them. We use **mtcars** for 
+today's illustration. 
+
+Type "?mtcars" in your Rstudio console for more information.
+
+```{r}
+m <- mtcars 
+# work on a copy,  espcially when your data size is big and takes time to load.
+
+str(m) 
+# structure of the data
+
+dim(m) # dimentions of the data
+ncol(m) # number of columns
+nrow(m) # number of rows
+
+head(m)
+# quick look at the first couple (6 by default) rows
+head(m, n = 15)
+
+tail(m)
+tail(m, n = 10)
+# last n rows
+
+summary(m)
+# summary statisics of the data
+```
+
+### 1.2 Substting a Data Frame 
+
+```{r}
+
+# subset by index
+m[ ,2]       # 2nd column
+m[1, ]       # 1st row
+m[2,3]       # 2nd row, 3rd column
+
+# subset by variable name
+names(m) # names() list all variable names of your data in order 
+m$mpg # data$variable.name
+
+# further subsetting of the mpg column refers to vector subsetting
+m$mpg[20] # vector subsetting by index
+m$mpg[m$mpg > mean(m$mpg)] # vector subsetting by logial expressions
+
+# How many cars have above-the-average mpg?
+length(m$mpg[m$mpg > mean(m$mpg)]) 
+# Index of cars with above-the-average mpg
+which(m$mpg > mean(m$mpg))
+# Names of cars with above-the-average mpg
+rownames(m)[m$mpg > mean(m$mpg)]
+
+# subset data frame using combined methods
+m[m$mpg > mean(m$mpg), c(1,2,3)]
+m[m$mpg > mean(m$mpg), c("mpg","cyl","disp")]
+
+
+# add a column : manufacturer's suggested retail price (MSRP)
+m$MSRP <- 20000 * c(1:nrow(m))
+# Often, we focus on log price:
+m$lnMSRP <- log(m$MSRP)
+
+# delete a column
+m$MSRP <- NULL #or
+m <- m[, -12]
+```
+
+## 2. Write Functions
+
+Create a summary statistics table with **Minimum, Median, Mean, 
+Maximum and Standard Deviation**.
+
+### 2.1 Try to use functions from packages
+
+```{r}
+
+summary(m)
+summary(m[, c("mpg", "disp", "hp")])
+
+```
+
+**or**
+
+```{r, message = FALSE}
+
+psych::describe(m)
+psych::describe(m[, c("mpg", "disp", "hp")])
+pastecs::stat.desc(m)
+
+```
+
+### 2.1 Write your own summary statistics function
+
+Function.Name <- function(Parameters){
+
+BODY OF YOUR FUNCTION
+
+}
+
+
+```{r}
+summary_sd <- function(x) {
+        
+        c(Min = min(x), Mean = mean(x), 
+          Median = median(x), Max = max(x), SD = sd(x))
+}
+
+# summary_sd(m) ## error message ...
+# type of your input..
+summary_sd(m$mpg)
+
+# Too many digits after the decimal point?  
+summary_sd <- function(x) {
+        
+        round(c(Min = min(x), Mean = mean(x), Median = median(x), 
+                Max = max(x), SD = sd(x)), 3)
+}
+
+
+# How to apply a function to all of the varialbes in your data?
+sapply(m[, c("mpg", "disp", "hp")], summary_sd)
+```
+
+Reference:  apply functions -
+https://www.r-bloggers.com/apply-lapply-rapply-sapply-functions-in-r/
+
+  
+
+## 3. Plots
+
+### 3.1 Create a scatterplot:
+
+```{r}
+plot(x = m$hp, y = m$mpg)
+
+# add a title
+plot(x = m$hp, y =m$mpg, main = "Relationship Between Miles/Gallon and Horse Power")
+
+# change labels of the axises
+plot(x = m$hp, y =m$mpg, main = "Relationship Between Miles/Gallon and Horse Power",
+     xlab = "Horse Power", ylab = "Miles/Gallon")
+
+# change plotting character
+plot(x = m$hp, y =m$mpg, main = "Relationship Between Miles/Gallon and Horse Power",
+     xlab = "Horse Power", ylab = "Miles/Gallon",
+     pch = 16) # ?points
+
+# change color of plot
+plot(x = m$hp, y =m$mpg, main = "Relationship Between Miles/Gallon and Horse Power",
+     xlab = "Horse Power", ylab = "Miles/Gallon",
+     pch = 16,
+     col = "purple") # ?points
+
+```
+Reference for more formatting: https://www.statmethods.net/advgraphs/parameters.html
+
+### 3.2 Create a histgram:
+
+```{r}
+hist(m$mpg, freq = FALSE, main = "Histogram of Miles/Gallon", xlab = "MPG")
+hist(m$mpg, freq = TRUE, main = "Histogram of Miles/Gallon", xlab = "MPG")
+
+```
+
+### 3.3 Two graphs in one panel
+
+```{r}
+par(mfrow = c(1,2))
+
+plot(x = m$hp, y =m$mpg, main = "Miles/Gallon vs Horse Power",
+     xlab = "Horse Power", ylab = "Miles/Gallon",
+     pch = 16,
+     col = "purple") # ?points
+
+hist(m$mpg, freq = FALSE, main = "Histogram of Miles/Gallon", xlab = "MPG")
+
+par(mfrow = c(1,1))
+
+
+```
+
+Save you plot
+pdf("path/plot-name.pdf")
+plot()
+dev.off()
+
+### 3.4 Powerful **ggplot2** !!
+
+#### 3.4.1 Scatter plot
+```{r}
+# install.packages("ggplot2")
+
+# plot mpg vs hp
+ggplot(data = m, aes(hp, mpg)) +
+        geom_point()
+
+
+plot.mpg.hp <- ggplot(data = m, aes(hp, mpg)) +
+# change color, shape, and size of the points
+        geom_point(colour = "purple", shape = 18, size = 3) +
+# add title and change axis names
+        ggtitle("Miles/Gallon vs Horse Power") +
+        xlab("Miles/Gallon") +
+        ylab("Horse Power") +
+#  add options - move the title to  center, and make it bigger.. nicer!! ...    
+        theme(title = element_text(size=12, face = 'bold'),
+     plot.title = element_text(hjust = 0.5))
+
+        
+```
+
+Good Reference: https://ggplot2.tidyverse.org
+List several good places to start your journey of **ggplot2**. 
+
+#### 3.4.2 Histogram 
+
+
+```{r}
+ggplot(data = m, aes(mpg)) +
+        geom_histogram(bins = 8, fill = "blue", alpha = .7) +
+        # add title and change axis names
+        ggtitle("Histogram of Horse Power") +
+        xlab("Horse Power") +
+        ylab("Count") 
+
+hist.mpg <- ggplot(data = m, aes(mpg)) +
+        geom_histogram(bins = 8, fill = "blue", alpha = .7) +
+        # add title and change axis names
+        ggtitle("Histogram of Horse Power") +
+        xlab("Horse Power") +
+        ylab("Count") 
+
+ggsave(hist.mpg, filename = "~/Documents/AAE636_2018Fall/FridaySessions/2_Sep28/mpg-hp.pdf",
+       device = "pdf")
+
+```
+
+### 3.4.3 Put two graphs in one panel
+
+```{r, message=FALSE}
+
+# install.packages("gridExtra")
+gridExtra::grid.arrange(plot.mpg.hp, hist.mpg, ncol=2)
+# save your plot to a pdf file
+ggsave(filename = "~/Documents/AAE636_2018Fall/FridaySessions/2_Sep28/two-in-one.pdf",
+       device = "pdf")
+
+```
+
+
