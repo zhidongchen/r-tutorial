@@ -1,0 +1,569 @@
+---
+title: "R Tutorial"
+author: "Zhidong Chen"
+date: "9/14/2018"
+output:html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#  Outline
+
+*  **Why R?**
+<!-- Use Slides Created by R presentation for this part--> 
+<!-- Free and Powerful, highly employable -->
+<!-- Active user community, which makes find answer to your question easy-->
+*  **Intro to the interface of R and RStudio**
+<!-- Mainly introduce RStudio interface, setup and etc --> 
+* **Use R**
+ + 0. Set up working environment
+ + 1. R as a Calculator
+ + 2. Operators
+ + 3. Variable assignment
+ + 4. Basic data types in R
+ + 5. Data structures in R
+     + Vectors
+     + Matrics
+     + Data frames
+     + Lists
+ + 6. Functions
+ + 7. Loops
+
+***
+
+# Why R? 
+
+- It is free! 
+- It is powerful! More flexilbe than Stata, and more fun than Matlab, especially for us:) <!--Assuming there are no engeering students in this class.--> 
+- Highly employable. 
+- Active user community.
+- One good reference: Advantages of R [by itself and vs. Matlab and Stata](http://tdmcarthur.github.io/slidify-presentations/r-intro/) 
+
+***
+
+# R and RStudio
+
+> **R** 
+
+<!--- R language, comes with a small graphic interface-->
+- R is a free software environment for statistical computing and graphics.
+<!--- R Gui - graphic user interface-->
+- R is available for Linux, MacOS, and Windows. 
+- Download from [The Comprehensive R Archive Network (CRAN)](https://cran.r-project.org/)
+
+> **RStudio**
+
+- Integrated development environment (IDE)
+- Most popular R code editor
+- Also interfaces with R for Windows, MacOS, and Linux platforms
+- Download from [RStudio.com](https://www.rstudio.com/products/rstudio/download/#download)
+
+> **Shortcut to Clear Console**
+
+* For Mac user:
+    + Clear R console via *command-option-L* 
+    + Clear RStudio console via *control-L* 
+
+* For Windows user:
+    + *control-L* clear console for both R and RStudio 
+
+Note: Clearing console doesn't delete any variables.
+
+> **Something for fun:**
+
+* Explore the interface of RStudio by yourself.
+    + Try to change the appearance of the editor? 
+    + Try to change the pane layout in RStudio?
+    + Try to create a RMarkdown file? 
+    + ...Have fun:)
+ 
+<!-- I will use RStudio for this class. RStudio is the most popular R code editor. I like RStudio, b/c I like its layout, shows your more things, like you see the data and variables you have."-->
+
+***
+<!--Ok, ladies and gentlemen, it is time to get our hands dirty-->
+
+# Use R!
+
+0. **First Steps**
+1. **Operators**
+2. **R As a Calculator**
+3. **Variable Assignments**
+4. **Basic Data Types**
+5. **Basic Data Structures**
+   + **Vectors**
+   + **Matrices**
+   + **Data frames**
+   + **Lists** 
+6. **Functions**
+7. **Loops**
+<!--apply functions?-->
+
+***
+
+### 0. First Steps
+<!--
+Clean working environment
+
+```{r}
+rm(list=ls())
+```
+-->
+<!--
+Before you start coding, it's a good habit to set up the working directory,
+in human lanuage, the folder that you read and write to. 
+-->
+> Set up working directory: where do you want to store your work?
+
+<!--Before setting up your own working directory, let's find out what's the current wd? -->
+
+```{r, echo = TRUE}
+ # what's the currrent working directory?
+   getwd() 
+```
+ # RStudio: "Files" - “More” – “Go To Working Directory” 
+
+```{r}
+  setwd("~/Documents/AAE636_2018Fall/RTutorial")
+  # If I were using Windows: setwd("C:/Documents//RTutorial")
+```
+ # With RStudio: "Files" - “More” – “Setting As Working Directory”
+  
+***
+
+
+### 1. R as a Calculator
+<!-- 
+All you only need to do it to put in the arethmetic expressions: hit return
+Here are some easy Arithmetic examples. 
+-->
+> **Arithmetic**
+```{r}
+1 + 2
+1 - 2
+1 * 2
+1 / 2
+5%%2 # modulo (remainder)
+# Let's add some relational operators
+4 > 3
+2 * 10 - 1.5 + 7/3 != 10
+4^3 * 1.532 + 8.23 >= 5^10 - 2^8 + sqrt(83) - 10/4.53
+```
+> **Calculator functions**
+
+```{r}
+sqrt(4)
+exp(2)
+log(2) # Default is base e
+log(2, base = 10)
+```
+> **Other built-in functions**
+```{r}
+abs(-1) # Absolute value
+5/7
+round(5/7, digits = 2) # Round off your numbers
+# How to find the default number of digits in the function "round"?
+# ?round
+```
+> **Summary of new concepts**
+
+* **Function** : input and output: exp(), log(), abs(), round()
+* **Options** : parameters of functions
+* **Default value of Options** : parameter values taken when not specified otherwise 
+* **Help functions**
+    +  ?function.name or help(function.name):?lm or help(lm)
+    +  help.search("keywords"): help.search("quantile")
+    + **Ask Google!** : question/keywords + r. Eg. Try search "dplyr vs data.table r"
+    
+> Answer some questions:
+
+* 1. What's the square root of 2 rounded to 5 decimal places?
+
+* 2. What's the value of 3.567 raised to the power of 4?
+
+* 3. Is 10.33 equal to  2/10 + 10 / 3 - 1000/10^2 - 2/3?
+
+* 4. What's the value of the logarithm of 5 with base 1000?
+
+***
+
+### 2. Operators in R
+
+<!-- R's binary and logical operators will look very familiar to programmers.--> 
+<!-- [A good reference for various operators in R](https://www.tutorialspoint.com/r/r_operators.htm)-->
+<!-- Note that binary operators work on vectors and matrices as well as scalars.-->
+
+<!--
+There are three main types operators. 
+-->
+> Arithmetic Operators:
+
+Operator | Description
+-------- | -----------
++        | addition
+-        | subtraction
+*        | multiplication
+/        | division
+^ or **  | exponentiation
+
+> Relational Operators:
+
+Operator | Description
+-------- | -----------
+$>$	 | greater than
+$>=$	 | greater than or equal to
+$==$	 | exactly equal to 
+$!=$	 | not equal to
+
+<!-- b/c euqal sign is an assingment.
+exclamation equal sign is "not equal to"
+-->
+
+> Logical Operators:
+
+Operator | Description
+-------- | -----------
+ &	 | AND
+\|	 | OR
+ !	 | NOT
+
+<!--
+> One useful special operator:
+*%in%* : This operator is used to identify if an element belongs to a vector.
+```{r}
+v1 <- 8
+v2 <- 12
+t <- 1:10
+print(v1 %in% t) 
+print(v2 %in% t) 
+```
+-->
+<!-- This list is not comprehensive, but a good starting point.-->
+
+***
+
+### 3. Variable Assignments
+
+<!--left arrow or equal sign-->
+- Assignment: "<-" or "=" 
+
+```{r}
+# Note that R is case sensitive!
+x <- 3
+X <- 3
+# Cannot start with a number
+# 0x <- 3 
+# More descriptive names 
+class.size2018 <- 48
+course.name <- "AAE636"
+## Let's put them all together! cat - con·cat·e·nate
+cat("2018 Fall class of", course.name, "has", class.size2018, "registered students.")
+```
+<!--?cat: Concatenate and Print-->
+<!-- Difference in how I assign values to class.size2017 and course.name? - lead to next topic Basic data types in R -->
+ 
+***
+
+### 4. Basic Data Types
+
+<!-- Three main data types you will come cross. They are: **Numeric**, **Character**, and **Logical**
+
+Numeric is real numbers, like 2, 3.2, 100
+Characters are a sequence of words or texts, like "Go Badgers!" When you creat a 
+character variable, remember the "quotation marks"!
+Logical values are a binary TRUE and FAULSE. We've already seen them in relational operations
+-->
+
+  - **Numeric**, **Character**, and **Logical**
+  - Text (or string) values are called **Characters**.
+  - Boolean values (TRUE and FALSE) are called **Logical**.
+  <!--character variable: a sequence of words or text-->
+ 
+  - class()  # Check which data type your varible is:
+  - as.numeric(), as.charater().. # Change data types: 
+
+<!--Maybe ask students about datatypes?-->  
+```{r}
+x <- 3 
+class(x) 
+course <- "cool class"
+class(course)
+z <- FALSE
+class(z)
+# Variable type matters!
+y <- "5"
+# y + 3  # Returns an error; 
+as.numeric(y) + 3  # We have to set y to be a number
+```
+<!--Cannot add words to a number, like doesn't make sense : "sunny" + 85-->
+***
+
+## 5. Basic Data Structures in R
+
+> Common Data Structures
+
+<!--
+All exmaples I have shown are either single-value or single-valued varialbes. However, in real data analysis, we often work with a group of number, they can be organized in different ways, like:
+-->
+
+  * Vectors (numerical, character or logical)
+  * Matrices
+  * Data frames
+  * List
+  
+***
+
+> 5.1 **Vector**
+
+* Most common and basic data structure
+* A vector is a collection of elements, like (1,2,3,4) or ("cat", "dog", "chipmonk")
+
+* **Create a vector** - In R, you combine values into a vector with the combine function c(). Vector elements are separated by a comma.
+
+```{r}
+vector <- c(1, 2, 3)
+vector
+class(vector)
+length(vector)
+
+# Here are a couple of ways to create a numeric vector:
+numeric_vector <- 1:3
+seq(1,100,2) # sequence function
+rep(0,100) # replicate function
+
+character_vector <- c("a", "b", "c")
+character_vector
+length(character_vector)
+
+logical_vector <- c(TRUE, TRUE, FALSE)
+
+vector.mix <- c(1, "cat", TRUE)
+class(vector.mix)
+```
+* **Vector Operations** <!--Once you have created your vectors in R, you can use them to do operatioons.-->
+
+<!--
+Example: 
+-->
+```{r}
+# We record the class size in AAE 636 and AAE 345 for years 2014 - 2018
+AAE636 <- c(26,32,26,38,48)
+AAE245 <- c(15,55,42,19,23)
+
+# Are all yearly enrollment of AAE636 greater than 30?
+AAE636 > 30
+# Total enrollment of AAE636 over all 2014 - 2018
+sum(AAE636)
+# Average enrollment of AAE636 over 2014 - 2017
+mean(AAE636)
+# Yearly enrollment for AAE245 and AAE636
+AAE636 + AAE245
+# Is enrollment in AAE636 always higher than AAE245?
+AAE636 > AAE245
+# In which year dose AAE 636 have less students than AAE 245?
+which(AAE636 < AAE245) 
+# How to interpret the output of the which function?
+
+# which year it is? -> name a vector
+```
+
+* **Name a vector** <!--Give a name to the elements of a vector with the names()function-->
+
+```{r} 
+# We like to work with data
+# What's the difference between data and numbers?
+# NAMES!
+names(AAE636) <- c("2014", "2015", "2016","2017", "2018")
+# Create a name vector, useful espcially when the name vector will be used for more than once
+class.names <- c("2014", "2015", "2016","2017", "2018")
+names(AAE636) <- class.names
+names(AAE245) <- class.names
+# In which year did AAE245 have more students than AAE636?
+which(AAE636 < AAE245) 
+# How many students are enrolled in AAE636 in the years when enrollment 245 < 636?
+AAE636[which(AAE636 < AAE245)]
+```
+<!-- Last question of the above exmaples leads to indexing/subsetting of a vector-->
+
+* **Vector indexing/subseting**
+
+ + single item
+ + multiple items
+ + logical expression
+
+```{r}
+# What was the class size of AAE636 in 2016?
+AAE636[3] # use the location index
+AAE636["2016"] # use the name of the element 
+# What are the class sizes of AAE636 before 2017?
+# Several ways to do this:
+AAE636[c(1,2,3)] 
+## equivalent to 
+AAE636[1:3]
+AAE636[c("2014","2015","2016")]
+AAE636[-c(4,5)]
+
+# Which years' enrollment are greater than 30?
+AAE636[AAE636 > 30]
+```
+<!-- R knows what to do when you pass a logical vector in square  brackets: it will only select the elements that correspond to TRUE in # selection_vector.-->
+<!-- https://campus.datacamp.com/courses/free-introduction-to-r/chapter-2-vectors-2?ex=14 -->
+
+***
+
+
+> 5.2 **Matrix**
+
+```{r}
+M = matrix( c(2,6,5,1,10,4), nrow = 2,ncol = 3,byrow = TRUE)
+N = matrix(c(1,2,3), nrow = 3, ncol = 1, byrow = TRUE)
+t = M %*% t(M)
+M %*% N
+print(t)
+```
+
+***
+
+> 5.3 **Data Frames**
+
+* ~ a list of equal-length vectors
+
+## Importing Data
+
+The first thing you'll want to do with all these fancy tools is apply them to data. But how do you get the data into R? There are two steps:
+
+* Set working directory. R has to know where to find your data. We do this with the setwd("directory/structure/etc") command. This means you have to gain some knowledge of command-line directories.
+* Read data file, which _should_ be a comma separated value file, otherwise known as .csv. There are ways of directly reading in Excel, Stata, and other data formats. But your life will be better if you're working with a .csv file.
+
+```{r read_data}
+setwd("~/Downloads/")
+
+# Tell R to read in the data, where sweetdatafile.csv is a .csv data file located in the Downloads directory
+# data <- read.csv("sweetdatafile.csv")
+```
+
+At this point we can start working directly with the data inside R!
+
+```{r}
+# Example
+# mtcars is a built-in data.frame: ?mtcars, mtcars
+
+m <- mtcars # work on a copy
+head(m)     # quick look at the first couple (6 by default) rows
+tail(m)     # last 6 rows
+str(m)      # structure of the data
+summary(m)  # summary statistics of your data
+dim(m)      # dimenstions of your data
+n.row <- dim(m)[1]
+n.col <- dim(m)[2] # or length(m)
+
+# Subsetting the data
+m[ ,1]       # 1st column
+m[1, ]       # 1st row
+m[2,3]      # 2nd row, 3rd column
+m$mpg       # subset column mpg 
+# further subset of the mpg column refers to vector subsetting
+m$mpg[20] 
+m$mpg[m$mpg > mean(m$mpg)]
+which(m$mpg > mean(m$mpg))
+rownames(m)[which(m$mpg > mean(m$mpg))]
+```
+
+* Remove missing value
+  + data.frame <- na.omit(data.frame)
+
+***
+
+> 5.4 **List**
+
+* Vectors are good for organizing single-valued elements: numbers, characters, etc.
+* But sometimes we want to collect things that are of higher-level, like several data frames, data frame and vectors, or matrices
+* In that case we need to use a **list**
+
+```{r}
+my.list <- list("a", 2, c(1,3,4),c("A", "B", "C"),TRUE)
+my.list
+length(my.list)
+```
+
+***
+
+
+> 6. **Functions**
+
+ + built-in function
+ + function from packages
+ + user-written functions
+
+
+> Pythagorean Machine
+
+```{r pyth}
+pythagorean_machine <- function(a,b){
+        temporary_value <- a^2+b^2
+        c <- sqrt(temporary_value)
+        return(c)
+}
+pythagorean_machine(1,4)
+pythagorean_machine(2,5)
+```
+
+<!--
+> Functions that call functions!
+
+We'll work with a simple example for the moment. Let's return to our pythagorean machine. It squares values, which is super easy and built in. But let's say we wanted our own method. We could write a function called "square"
+
+```{r square}
+square <- function(x){
+        answer <- x * x
+        return(answer)
+}
+square(2)
+square(4)
+square(8)
+```
+We can now re-write our Pythogrean forumula to call our own formula!
+
+```{r}
+pythogrean_machine_own <- function(a,b){
+        temp_value <- square(a) + square(b)
+        c <- sqrt(temp_value)
+        return(c)
+}
+
+pythogrean_machine_own(2,5)
+```
+-->
+Some brief notes:
+
+* We don't actually need to store $a^2 + b^2$ in a temporary variable. That was just for readability. Which is also important.
+
+***
+
+> 7. **Loops**
+
+Sometimes we want to do something more than once. In this case we use a loop.
+
+A loop has several attributes. The first is the iterator, typically represented as a single variable like "i", "j", or "k". Then we tell the loop which values the iterator should take on. These range from one number to another.
+
+Here's a simple loop:
+
+```{r easy_loop}
+
+for (j in 1:5){
+        print(j)
+}
+```
+This loop should be fairly inteligible. It says for the iterator "i" from values from 1 to 5 (incrementing by 1), to print out that value.  
+```{r complex_loop}
+for (i in 1:3){
+        for (j in 1:5){
+        print(c(i,j))
+        }
+}
+```
+The above case shows a loop inside a loop. Let's read through it. We start out with $i=1$. Then we move to the interior loop, where $j$ takes on values 1 through 5. It prints out the concatenation of $i,j$ which is 1,1; 1,2; 1,3; 1,4; 1,5. Then it moves to the outer loop, so $i=2$, back to the inner loop: 2,1; 2,2; 2,3; 2,4; 2,5. And finally back to the outer loop for the last time for $i=3$
+
+
+
