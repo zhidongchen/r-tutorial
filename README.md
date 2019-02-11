@@ -6,7 +6,7 @@ I am working with a colleague (Bethany Glinsmann) to re-edit them for the incomi
 
 Our loose outline is:
 
-0.       How to download & install R, RStudio, and add-ons for RMarkdown
-1.       R operators, data structures, importing data, working with RMarkdown
-2.       Dataframes, subsetting & cleaning data, intro to tidyverse functions, writing your own function
-3.       Graphing with ggplot2
+ 1.       How to download & install R, RStudio, and add-ons for RMarkdown
+ 2.       R operators, data structures, importing data, working with RMarkdown
+ 3.       Dataframes, subsetting & cleaning data, intro to tidyverse functions, writing your own function
+ 4.       Graphing with ggplot2
