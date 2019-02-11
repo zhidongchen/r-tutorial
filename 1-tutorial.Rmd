@@ -1,7 +1,6 @@
 ---
-title: "R Tutorial"
+title: "Tutorial 1"
 author: "Zhidong Chen"
-date: "9/14/2018"
 output:html_document: default
 ---
 
@@ -125,7 +124,7 @@ in human lanuage, the folder that you read and write to.
  # RStudio: "Files" - “More” – “Go To Working Directory” 
 
 ```{r}
-  setwd("~/Documents/AAE636_2018Fall/RTutorial")
+  setwd("data/")
   # If I were using Windows: setwd("C:/Documents//RTutorial")
 ```
  # With RStudio: "Files" - “More” – “Setting As Working Directory”

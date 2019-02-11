@@ -1,19 +1,15 @@
 ---
-title: "Friday_Session_Spe28"
+title: "Tutorial 2"
 author: "Zhidong Chen"
-date: "9/28/2018"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-# Set root directory 
-require("knitr")
-opts_knit$set(root.dir = "~/Documents/AAE636_2018Fall/FridaySessions/2_Sep28")
 ```
 
-# Today
+## Outline
   1. **Data Frame**
   2. **Writing Functions**
   3. **Plots**
@@ -36,7 +32,7 @@ Read excel file:
 
 ```{r, warning=FALSE}
 # read data
-house636 <- readxl::read_excel("house636.xlsx", sheet = "Data", col_names = TRUE)
+house636 <- readxl::read_excel("data/house636.xlsx", sheet = "Data", col_names = TRUE)
 ```
 
 Most commonly-used data format: .csv -- comma-separted values files. 
