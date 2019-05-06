@@ -1,0 +1,234 @@
+---
+title: "Tutorial 3"
+author: "Bethany Glinsmann"
+date: "3/19/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# Set root directory 
+require("knitr")
+opts_knit$set(root.dir = "~/AAE 770 - math/R_Materials_AAE636_Zhidong/Bethany/")
+```
+
+# Today
+  1. **Intro to plotting in R**
+  2. **Scatterplots**
+  3. **Histograms**
+  4. **Plot aesthetics**
+  5. **Arranging multiple plots**
+
+
+## 0. Load required packages and data
+
+```{r, echo = TRUE, message = FALSE, warning = FALSE}
+# Load packages
+library(dplyr)
+library(ggplot2)
+library(gridExtra)
+
+my_data <- mtcars
+glimpse(my_data)
+# ?mtcars includes variable definitions
+
+```
+
+
+## 1. Intro to plotting in base R
+
+Plotting in R can be simple or complicated, depending on your needs. 
+To get started, you could use some basic plotting functions, such as 
+plot() to create a scatterplot or hist() to create a histogram.
+When using these functions, you first specify your data and variables,
+and then add additional options related to labels and appearance.
+
+```{r}
+# Basic scatterplot
+plot(x = my_data$hp, y = my_data$mpg)
+
+# Add a title
+plot(x = my_data$hp, y =my_data$mpg, 
+     main = "Relationship Between Miles/Gallon and Horse Power")
+
+# Change labels of the axes
+plot(x = my_data$hp, y =my_data$mpg, 
+     main = "Relationship Between Miles/Gallon and Horse Power",
+     xlab = "Horse Power", 
+     ylab = "Miles/Gallon")
+
+# Change style of point
+plot(x = my_data$hp, y =my_data$mpg, 
+     main = "Relationship Between Miles/Gallon and Horse Power",
+     xlab = "Horse Power", 
+     ylab = "Miles/Gallon",
+     pch = 16) 
+
+# Change color of plot
+plot(x = my_data$hp, y =my_data$mpg, 
+     main = "Relationship Between Miles/Gallon and Horse Power",
+     xlab = "Horse Power", 
+     ylab = "Miles/Gallon",
+     pch = 16,
+     col = "purple") 
+
+# Basic histogram (with frequency count)
+hist(my_data$mpg, 
+     freq = TRUE, 
+     main = "Histogram of Miles/Gallon", 
+     xlab = "MPG")
+
+# Basic histogram (with relative frequency)
+hist(my_data$mpg, 
+     freq = FALSE, 
+     main = "Histogram of Miles/Gallon", 
+     xlab = "MPG")
+
+# Save your plot
+# pdf("file_path/plot_name.pdf")
+# plot(x = my_data$hp, y = my_data$mpg)
+# dev.off()
+
+```
+
+The ggplot2 package is a very powerful tool for creating 
+visually pleasing plots. We will use the ggplot() function going
+forward. This website is a good resource for learning more:
+https://ggplot2.tidyverse.org
+Download their "cheatsheet" for ggplot2. 
+
+
+## 2. Advanced plotting with ggplot: Scatterplots
+
+```{r}
+
+# Basic scatterplot
+ggplot(data = my_data, # specify the data
+       aes(x = hp, y = mpg)) + # specify the variables (x, y axes)
+         geom_point()  # specify how to represent the data points, can add aesthetic options here
+
+# Save the plot as an object and add more aethetic layers
+plot.mpg.hp <- ggplot(data = my_data,
+                      aes(x = hp, y = mpg)) +
+                        geom_point(colour = "purple", shape = 18, size = 3) + # Specify color, shape, and size of points
+                        ggtitle("Miles/Gallon vs Horse Power") + # Add title
+                        ylab("Miles/Gallon") + # Label y-axis
+                        xlab("Horse Power") + # Label x-axis
+                        theme(title = element_text(size=12, face = 'bold'), # Increase title font size and make bold
+                              plot.title = element_text(hjust = 0.5)) # Center title
+  
+# Type ?pch in your console to see the corresponding numeric values for different plotting characters. 
+
+```
+Now play around with changing the color, size, and other aesethetics. 
+
+## 3. Advanced plotting with ggplot: Histograms
+
+```{r}
+
+# Basic histogram
+ggplot(data = my_data, # specify the data
+       aes(mpg)) + # specify the variable of interest
+        geom_histogram(bins = 8, fill = "blue", alpha = .7) + # Specify number of bins, color, and transparency
+        ggtitle("Histogram of Horse Power") + # Add title
+        xlab("Horse Power") + # Label x-axis
+        ylab("Count") # Label y-axis
+
+# Save the plot as an object
+hist.mpg <- ggplot(data = my_data, # specify the data
+       aes(mpg)) + # specify the variable of interest
+        geom_histogram(bins = 8, fill = "blue", alpha = .7) + # Specify number of bins, color, and transparency
+        ggtitle("Histogram of Horse Power") + # Add title
+        xlab("Horse Power") + # Label x-axis
+        ylab("Count") # Label y-axis
+
+# Export the plot to a PDF
+# Note the "~" is a relative file path. It is relative to your R working directory, 
+# which can be identified using getwd()
+ggsave(filename = "~/AAE 770 - math/R_Materials_AAE636_Zhidong/Bethany/mpg-hp.pdf", # Specify location to save file
+       hist.mpg, # Specify plot to save
+       device = "pdf")
+
+```
+
+## 4. Plot aesthetics
+
+Let's play around with a few more aethetics. The options are limitless!
+
+```{r}
+
+# Scatterplot: MPG vs weight
+# Change color of dots based on manual vs. automatic transmission
+scatter1 <- ggplot(data = my_data,
+                  aes(x = wt, y = mpg, 
+                      color = factor(am, labels = c("Automatic", "Manual")))) + # factor converts this from a continuous variable to a discrete variable. Also add labels for legend to replace 0/1 values
+                    geom_point(shape = 18, size = 3) + # Specify shape and size of points
+                    xlim(0,6) + # Specify x-axis range
+                    ylim(0,40) + # Specify y-axis range
+                    labs(title = "MPG vs Weight", # Add title
+                         x = "Weight (1,000 pounds)", # Label x-axis
+                         y = "Miles per Gallon", # Label y-axis
+                         color = "Transmission Type") + # Legend header 
+                    theme(title = element_text(size=12, face = 'bold'), # Increase title font size and make bold
+                          plot.title = element_text(hjust = 0.5), # Center title
+                          legend.position = c(.85, .9)) # Specify legend position
+
+scatter1
+
+# Bar chart: Miles per gallon
+
+# Start by arranging the data by miles per gallon
+my_data_2 <- my_data %>%
+  mutate(make_model = rownames(my_data))  # Preserve the car make and model info, which is stored as row names
+
+
+bar1 <- ggplot(my_data_2,
+               aes(x = reorder(make_model, mpg), y = mpg, fill = mpg)) + # Sort by mpg, descending
+          geom_bar(stat = "identity") + # Specify the height of bars is equal to the data value
+          scale_fill_gradient(low = "green", high = "black") + # Specify bar fill colors
+          labs(title = "MPG by car make and model",
+               x = "Make and Model",
+               y = "Miles Per Gallon") +
+          theme(legend.position = "none", # Remove legend
+                plot.title = element_text(hjust = 0.5)) + # Center title
+          coord_flip() # Transpose the plot for horizontal bars
+
+bar1
+  
+
+```
+
+## 5. Arranging multiple plots
+
+The gridExtra package allows you to place multiple plots in a
+matrix by specifying the number of columns and/or rows.
+
+```{r, message=FALSE}
+
+# install.packages("gridExtra")
+gridExtra::grid.arrange(scatter1, bar1, ncol=2)
+
+```
+
+The facet_grid() function allows you to plot data in a matrix, 
+based on a discrete variable. Here's an example using the transmission
+type.
+
+```{r}
+
+# Scatterplots of MPG vs weight, by transmission type
+
+ggplot(data = my_data,
+              aes(x = wt, y = mpg)) + 
+                geom_point(shape = 18, size = 3) + # Specify shape and size of points
+                xlim(0,6) + # Specify x-axis range
+                ylim(0,40) + # Specify y-axis range
+                labs(title = "MPG vs Weight", # Add title
+                     x = "Weight (1,000 pounds)", # Label x-axis
+                     y = "Miles per Gallon") + # Label y-axis
+                theme(title = element_text(size=12, face = 'bold'), # Increase title font size and make bold
+                      plot.title = element_text(hjust = 0.5)) + # Center title
+                facet_grid(cols = vars(factor(am, labels = c("Automatic", "Manual")))) # Specify facet variable and manually label
+
+```
